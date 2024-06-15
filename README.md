@@ -76,6 +76,35 @@
   **```Telegram-bot + FastAPI + ML-models;```**
 
 <details>
+  <summary> <strong><i> Инструкция по запуску TelegramAPI-бота:</i></strong> </summary>
+  
+  - В Visual Studio Code (**Windows-PowerShell activation recommended**) через терминал последовательно выполнить следующие команды:
+  
+    - Клонирование репозитория:
+    ```
+    git clone https://github.com/megamen-x/KRONOS.git
+    ```
+    - Создание и активация виртуального окружения (Протестировано на **Python 3.10.10**):
+    ```
+    cd ./KRONOS
+    python -m venv .venv
+    .venv\Scripts\activate
+    ```
+    - Уставновка зависимостей (при использовании **CUDA 12.1**):
+    ```
+    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+    pip3 install -r requirements.txt
+    ```
+    - После установки зависимостей (5-7 минут):
+    ```
+    python bot.py --bot_token='Token_bot' --db_path='Path_to_sqlite_DB'
+    ```
+
+</details> 
+
+</br> 
+
+<details>
   <summary> <strong><i> Инструкция по локальному запуску FastAPI-сервера:</i></strong> </summary>
   
   - В Visual Studio Code (**Windows-PowerShell activation recommended**) через терминал последовательно выполнить следующие команды:
