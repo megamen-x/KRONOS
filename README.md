@@ -1,6 +1,5 @@
 <a name="readme-top"></a>  
-<!--<img width="100%" src="https://github.com/megamen-x/KRONOS/blob/main/assets/pref_github.png" alt="megamen banner"> -->
-<!-- <img width="100%" src="https://github.com/megamen-x/ARTEMIS/blob/main/artemis/assets/images/github/main-frame.png" alt="megamen banner"> -->
+<img width="100%" src="https://github.com/megamen-x/KRONOS/blob/main/github-assets/pref_github.png" alt="megamen banner">
 <div align="center">
   <p align="center">
     <!--<h1 align="center">KRONOS</h1>-->
@@ -34,7 +33,6 @@
 
 <p align="right">(<a href="#readme-top"><i>Вернуться наверх</i></a>)</p>
 
-
 ## <h3 align="start"><a id="title2">Описание решения</a></h3>
 
 **Machine Learning:**
@@ -43,6 +41,8 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)
 
  - **Общая схема решения:**
+
+  <img width="100%" src="https://github.com/megamen-x/KRONOS/blob/main/github-assets/sheme_github.png" alt="megamen banner">
 
  - **Использованные модели:**
     - **```Embedder```**:
@@ -53,7 +53,8 @@
       - PitKoro/cross-encoder-ru-msmarco-passage.
 
 Ссылка на телеграмм-бота для тестирования решения:
-https://t.me/Kronos_rag_bot
+<!-- <button onclick="location.href='https://t.me/Kronos_rag_bot'" type="button">KRONOS-bot</button> -->
+[<img src="https://github.com/megamen-x/KRONOS/blob/main/github-assets/tg-btn.png" width="40"/>](https://t.me/Kronos_rag_bot)
 
 **Клиентская часть**
 
