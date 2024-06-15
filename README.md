@@ -54,7 +54,7 @@
 
 Ссылка на телеграмм-бота для тестирования решения:
 <!-- <button onclick="location.href='https://t.me/Kronos_rag_bot'" type="button">KRONOS-bot</button> -->
-[<img src="https://github.com/megamen-x/KRONOS/blob/main/github-assets/tg-btn.png" width="40"/>](https://t.me/Kronos_rag_bot)
+[<img src="https://github.com/megamen-x/KRONOS/blob/main/github-assets/tg-btn.png" height="60"/>](https://t.me/Kronos_rag_bot)
 
 **Клиентская часть**
 
