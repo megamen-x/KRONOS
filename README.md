@@ -98,10 +98,7 @@ https://t.me/Kronos_rag_bot
     ```
     python main.py
     ```
-    - В случае, если не работает стандратная команда makemigrations:
-    ```
-    python manage.py makemigrations main
-    ```
+
 </details> 
 
 </br> 
