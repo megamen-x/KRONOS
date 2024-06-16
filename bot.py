@@ -11,18 +11,15 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message, InlineKeyboardButton, CallbackQuery, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from rag_app.rag import *
+from rag import *
 from database import Database
 import prettytable as pt
 
-# os.environ["TOKENIZERS_PARALLELISM"] = "false"
+Settings.embed_model = HuggingFaceEmbedding(
+        model_name="./embedder"
+    )
+tokenizer, llm, retriever, reranker = None, None, None, None
 
-# Settings.embed_model = HuggingFaceEmbedding(
-#         model_name="intfloat/multilingual-e5-large"
-#     )
-# reranker = CrossEncoder('PitKoro/cross-encoder-ru-msmarco-passage')
-# index = None
-# retriever = None
 
 class LlmBot:
     def __init__(
@@ -32,7 +29,7 @@ class LlmBot:
         history_max_tokens: int,
         chunk_size: int,
     ):
-        self.default_prompt = 'Ты бог Олег, полное имя Олег Нейроныч. \nТы отвечаешь от лица мужского рода. \nТы бот. \nТы говоришь коротко и емко. \nТы был создан в компании Tinkoff (она же Тинькофф). \nТы работаешь на компанию Tinkoff (она же Тинькофф). \nТвое предназначение – отвечать на вопросы, помогать людям. \nТы эксперт в сфере сервисов Тинькофф.'
+        self.default_prompt = "Ты — Сайга, русскоязычный автоматический ассистент. Ты разговариваешь с людьми и помогаешь им."
         assert self.default_prompt
 
         # Параметры
@@ -80,7 +77,7 @@ class LlmBot:
         chat_id = message.chat.id
         self.db.create_conv_id(chat_id)
         markup = self.start_kb.as_markup()
-        await message.reply("Привет! Я ассистент, отвечающий на вопросы на темы, связанные с Тинькофф Бизнесом. Доступно 2 возможности узнать список команд\n   - Кнопка 'Узнать команды'\n   - Кнопка 'Menu', расположенная слева от строки запроса", reply_markup=markup)
+        await message.reply("Привет! Я ассистент, отвечающий на вопросы на темы по платформе 1С: Предприятие. Доступно 2 возможности узнать список команд\n   - Кнопка 'Узнать команды'\n   - Кнопка 'Menu', расположенная слева от строки запроса", reply_markup=markup)
 
     async def set_system(self, message: Message):
         chat_id = message.chat.id
@@ -143,7 +140,6 @@ class LlmBot:
         user_name = self.get_user_name(message)
         chat_id = user_id
         conv_id = self.db.get_current_conv_id(chat_id)
-        history = self.db.fetch_conversation(conv_id)
         system_prompt = self.db.get_system_prompt(chat_id, self.default_prompt)
 
         content = await self._build_content(message)
@@ -158,8 +154,7 @@ class LlmBot:
         placeholder = await message.answer("💬")
 
         try:
-            answer, _ = await self.query_api(
-                history=history,
+            answer = await self.query_api(
                 user_content=content,
                 system_prompt=system_prompt
             )
@@ -234,35 +229,21 @@ class LlmBot:
             return content.replace("\n", " ")[:40]
         return "Not text"
 
-    async def query_api(self, history, user_content, system_prompt: str) -> tuple:
-        # messages = history + [{"role": "user", "text": user_content}]
-        # messages = self._merge_messages(messages)
-        # assert messages
+    async def query_api(self, user_content, system_prompt: str) -> tuple:
+        names, pages, chunks, relevant_score = top_k_rerank(user_content, retriever, reranker)
+        if relevant_score >= 0.52:
+            answer = vllm_infer(tokenizer, llm, chunks, user_content, system_prompt)
+            if answer[0] == 'Я не могу ответить на ваш вопрос.':
+                return answer[0]
+            else:
+                generated_text = '''{llm_gen}\n===================================\nИсточники дополнительной информации:\nДокумент {doc_name}, {page_number}'''
+                formatted_answer = generated_text.format(
+                    llm_gen=answer[0],
+                    doc_name=names[0], page_number=pages[0]
+                )
+                return formatted_answer
+        return 'Данный вопрос выходит за рамки компетенций бота. Пожалуйста, переформулируйте вопрос или попросите вызвать сотрудника.'
 
-        # if messages[0]["role"] != "system" and system_prompt.strip():
-        #     messages.insert(0, {"role": "system", "text": system_prompt})
-        # assert messages
-        
-        # urls, chunks, relevant_score = top_k_rerank(user_content, retriever, reranker)
-
-
-        # messages[1]['text'] = '''Используй только следующий контекст, чтобы кратко ответить на вопрос в конце.
-        #     Не пытайся выдумывать ответ. Если контекст не соотносится с вопросом, скажи, что ты не можешь ответить на данный вопрос
-        #     Контекст:
-        #     ===========
-        #     {texts}
-        #     ===========
-        #     Вопрос:
-        #     ===========
-        #     {query}'''.format(texts=chunks, query=user_content)
-
-        # if relevant_score >= 0.805:
-        #     answer = response(messages)
-        #     formatted_answer = '{llm_gen}\n===================================\nСсылки с дополнительной информацией:\n1. {url_1}\n2. {url_2}\n3. {url_3}\n'.format(llm_gen=answer['result']['alternatives'][0]['message']['text'],
-        #     url_1=urls[0], url_2=urls[1], url_3=urls[2])
-        #     return formatted_answer, urls
-        # else:
-            return 'Данный вопрос выходит за рамки компетенций бота. Пожалуйста, переформулируйте вопрос или попросите вызвать сотрудника.', ['something']
     
     async def _get_text_from_audio(audio):
         pass
@@ -289,8 +270,8 @@ def main(
     history_max_tokens: int = 4500,
     chunk_size: int = 2000,
 ) -> None:
-    # global index, retriever
-    # index, retriever = start_rag()
+    global tokenizer, llm, retriever, reranker
+    tokenizer, llm, retriever, reranker = start_rag()
     bot = LlmBot(
         bot_token=bot_token,
         db_path=db_path,
