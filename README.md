@@ -74,13 +74,42 @@
 Данный репозиторий предполагает следующую конфигурацию тестирования решения:
   
   **```Telegram-bot + FastAPI + ML-models;```**
+</br> </br> 
+<details>
+  <summary> <strong><i> Предварительное скачивание моделей:</i></strong> </summary>
+  
+  - В Visual Studio Code (**Windows-PowerShell activation recommended**) через терминал последовательно выполнить следующие команды:
+  
+    - Клонирование репозитория (если окружение уже настроено, перейдите к последнему шагу):
+    ```
+    git clone https://github.com/megamen-x/KRONOS.git
+    ```
+    - Создание и активация виртуального окружения (Протестировано на **Python 3.10.10**):
+    ```
+    cd ./KRONOS
+    python -m venv .venv
+    .venv\Scripts\activate
+    ```
+    - Уставновка зависимостей (при использовании **CUDA 12.1**):
+    ```
+    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+    pip3 install -r requirements.txt
+    ```
+    - После установки зависимостей (5-7 минут):
+    ```
+    python models.py
+    ```
+
+</details> 
+
+</br> 
 
 <details>
   <summary> <strong><i> Инструкция по запуску TelegramAPI-бота:</i></strong> </summary>
   
   - В Visual Studio Code (**Windows-PowerShell activation recommended**) через терминал последовательно выполнить следующие команды:
   
-    - Клонирование репозитория:
+    - Клонирование репозитория (если окружение уже настроено, перейдите к последнему шагу):
     ```
     git clone https://github.com/megamen-x/KRONOS.git
     ```
@@ -109,7 +138,7 @@
   
   - В Visual Studio Code (**Windows-PowerShell activation recommended**) через терминал последовательно выполнить следующие команды:
   
-    - Клонирование репозитория:
+    - Клонирование репозитория (если окружение уже настроено, перейдите к последнему шагу):
     ```
     git clone https://github.com/megamen-x/KRONOS.git
     ```
