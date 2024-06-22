@@ -67,3 +67,6 @@ async def assist(request: Request):
             status_code=422,
             detail=[{"loc": ["body", error['loc'][0]], "msg": error['msg'], "type": error['type']} for error in e.errors()]
         )
+
+if __name__ == "__main__":
+    uvicorn.run('main:app', port=9875, host='0.0.0.0', reload=False)

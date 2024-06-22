@@ -46,11 +46,11 @@
 
  - **Использованные модели:**
     - **```Embedder```**:
-      - intfloat/multilingual-e5-large;
+      - BAAI/bge-m3;
     - **```LLM```**:
       - IlyaGusev/saiga_llama3_8b;
     - **```Reranker```**:
-      - PitKoro/cross-encoder-ru-msmarco-passage.
+      - BAAI/bge-reranker-v2-m3.
 
 Ссылка на телеграмм-бота для тестирования решения:
 <!-- <button onclick="location.href='https://t.me/Kronos_rag_bot'" type="button">KRONOS-bot</button> -->
